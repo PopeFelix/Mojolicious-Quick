@@ -71,29 +71,27 @@ subtest 'route by HTTP verb' => sub {
 };
 
 subtest 'URL rewrite' => sub {
-    TODO: {
-            local $TODO = 'URL rewrite not implemented';
+    my $app = Mojolicious::Quick->new(
+        [   '/thing/:id' => sub {
+                my $c  = shift;
+                my $id = $c->stash('id');
+                $c->render( text => qq{Thing $id} );
+            }
+        ],
+        rewrite_url => 1
+    );
 
-            my $app = Mojolicious::Quick->new(
-                [   '/thing/:id' => sub {
-                        my $c  = shift;
-                        my $id = $c->stash('id');
-                        $c->render( text => qq{Thing $id} );
-                    }
-                ]
-            );
-
-            my $ua   = $app->ua;
-            my $host = 'foo.bar.baz.bak';
-            $ua->on(
-                original_request => sub {
-                    my ( $ua, $req ) = @_;
-                    my $url = $req->url;
-                    is( $url->host, $host, 'Hostname matches' );
-                }
-            );
-            my $tx = $ua->get(qq{http://$host/thing/23});
-            is( $tx->res->body, 'Thing 23', 'Body OK' );
+    my $ua   = $app->ua;
+    my $host = 'foo.bar.baz.bak';
+    $ua->on(
+        original_request => sub {
+            my ( $ua, $req ) = @_;
+            my $url = $req->url;
+            is( $url->host, $host, 'Hostname matches' );
         }
+    );
+    my $tx = $ua->get(qq{http://$host/thing/23});
+    is( $tx->res->code, 200, 'Status OK');
+    is( $tx->res->body, 'Thing 23', 'Body OK' );
 };
 done_testing;

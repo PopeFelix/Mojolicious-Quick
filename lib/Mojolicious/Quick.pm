@@ -1,5 +1,6 @@
 use strict;
 use warnings;
+
 package Mojolicious::Quick;
 
 use Carp;
@@ -104,44 +105,56 @@ Mojo::UserAgent if need be.
 has rewrite_url => 0;
 
 my @HTTP_VERBS = qw/GET POST PUT DELETE PATCH OPTIONS/;
+
 sub new {
-    my $class = shift;
+    my $class  = shift;
     my $routes = shift;
 
-    if ($routes && ref $routes ne 'ARRAY') {
+    if ( $routes && ref $routes ne 'ARRAY' ) {
         unshift @_, $routes;
     }
     my $self = $class->SUPER::new(@_);
 
-    while (my $path = shift @{$routes}) {
+    while ( my $path = shift @{$routes} ) {
         my $action = shift @{$routes};
-        if (grep { $path eq $_ } @HTTP_VERBS) {
+        if ( grep { $path eq $_ } @HTTP_VERBS ) {
             my $verb = lc $path;
 
             $path = $action;
-            if (ref $path) {
+            if ( ref $path ) {
                 my @paths;
-                eval { 
+                eval {
                     @paths = @{$path};
                     1;
                 } or do {
                     my $reftype = ref $path;
                     croak qq{Object of type $reftype cannot be coerced into an array};
                 };
-                while (my $path = shift @paths) {
-                    my $action = shift @paths;
-                    $self->routes->$verb($path, $action);
+                while ( my $path = shift @paths ) {
+                    $action = shift @paths;
+                    $self->routes->$verb( $path, $action );
                 }
             }
             else {
                 $action = shift @{$routes};
-                $self->routes->$verb($path => $action);
+                $self->routes->$verb( $path => $action );
             }
         }
         else {
-            $self->routes->any($path => $action);
+            $self->routes->any( $path => $action );
         }
     }
+
+    $self->ua->on(
+        start => sub {
+            my ( $ua, $tx ) = @_;
+            $ua->emit( original_request => $tx->req );
+            if ( $self->rewrite_url ) {
+                $tx->req->url->host('')->scheme('')->port( $ua->server->url->port );
+            }
+        }
+    );
+
     return $self;
 }
 1;
