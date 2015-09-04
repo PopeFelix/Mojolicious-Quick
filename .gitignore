@@ -1,6 +1,6 @@
 *.tar.gz
 .env
-Mojo-UserAgent-Mock-*
+Mojolicious-Quick-*
 local/
 
 # Linux gitignore: https://github.com/github/gitignore/blob/master/Global/Linux.gitignore

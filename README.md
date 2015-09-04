@@ -38,6 +38,10 @@ version 0.001
                     my $id = $c->stash('id');
                     $c->render( text => qq{Get thing $id} );
                 },
+                '/other/thing/:id' => sub {
+                    my $id = $c->stash('id');
+                    $c->render( text => qq{Get other thing $id} );
+                }
             ],
             POST => [
                 '/thing/:id' => sub {
