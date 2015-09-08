@@ -86,17 +86,46 @@ use Mojo::Base 'Mojolicious';
     my $ua = $app->ua;
     my $tx = $ua->get('/thing/23'); # Returns body "Get thing 23"
 
-=head1 USE CASE, or "What's the point?"
+=head1 NOTES
+
+=head2 USE CASE, or "What's the point?"
 
 In developing a client that interfaces with a Web service, you might not always have access to said
 Web service. Perhaps you don't have authentication credentials. Perhaps the service is still in 
 development.  For whatever reason, if you need to mock up a quick and dirty Web application that you 
 can test against, this will allow you to do it.
 
+=head2 It's still Mojo under the hood.
+
+There is nothing in this package you can't do with regular L<Mojolicious> or L<Mojolicious::Lite>.
+This package simply makes that easier. For example, if you wanted a Mojolicious app in a single
+scalar:
+
+    package MyApp { use Mojolicious::Lite; }
+    my $app = MyApp::App;
+    $app->routes->get(
+        '/foo/bar' => sub {
+            # ...
+        }
+    );
+
+And if you wanted to to the URL rewrite business:
+
+    my $app = Mojolicious::new();
+
+    $app->ua->on(
+        start => sub {
+            my ( $ua, $tx ) = @_;
+            $tx->req->url->host('')->scheme('')->port( $ua->server->url->port );
+        }
+    );
+
+
 =attr rewrite_url
 
-If this is turned on, URLs will be rewritten internally to originate from localhost. If you use the
-internal user-agent
+Set to "true" by default. When this is set, the internal user agent (UA) will rewrite URLs 
+internally to originate from localhost. The original request will be available in the 
+'original_request' event emitted by the UA.
 
 =attr ua
 
@@ -104,9 +133,26 @@ Instance of L<Mojo::UserAgent>.  Note that this comes from L<Mojo>; it is noted 
 user that they have it available to them. You can also use this to attach your own instance of 
 Mojo::UserAgent if need be.
 
+=head1 EVENTS
+
+=head2 original_request
+
+    my $app = Mojolicious::Quick->new(
+        # ...
+    );
+    
+    $app->ua->on('original_request' => sub { 
+        my $req = shift;  # instance of Mojo::Message::Request
+        my $original_url = $req->url;
+        say "Original URL is $original_url";
+    });
+
+An event that stores the original request.  This event is always emitted, regardless of the value
+of L</rewrite_url>
+
 =cut
 
-has rewrite_url => 0;
+has rewrite_url => 1;
 
 my @HTTP_VERBS = qw/GET POST PUT DELETE PATCH OPTIONS/;
 
