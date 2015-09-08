@@ -88,8 +88,9 @@ version 0.002
 
 ## rewrite\_url
 
-If this is turned on, the internal user agent (UA) will rewrite URLs internally to originate from 
-localhost. The original request will be available in the 'original\_request' event emitted by the UA.
+Set to "true" by default. When this is set, the internal user agent (UA) will rewrite URLs 
+internally to originate from localhost. The original request will be available in the 
+'original\_request' event emitted by the UA.
 
 ## ua
 
