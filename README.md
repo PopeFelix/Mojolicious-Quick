@@ -4,7 +4,7 @@ Mojolicious::Quick - A quick way of generating a simple Mojolicious app.
 
 # VERSION
 
-version 0.002
+version 0.003
 
 # SYNOPSIS
 
@@ -151,7 +151,7 @@ of ["rewrite\_url"](#rewrite_url)
 
 # AUTHOR
 
-Kit Peters &lt;popefelix@gmail.com>
+Kit Peters <popefelix@gmail.com>
 
 # COPYRIGHT AND LICENSE
 
