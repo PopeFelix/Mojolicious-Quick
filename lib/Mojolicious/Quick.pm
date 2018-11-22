@@ -114,7 +114,7 @@ scalar:
         }
     );
 
-And if you wanted to to the URL rewrite business:
+And if you wanted to do the URL rewrite business:
 
     my $app = Mojolicious::new();
 
