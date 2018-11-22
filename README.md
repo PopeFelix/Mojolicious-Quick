@@ -98,6 +98,10 @@ Instance of [Mojo::UserAgent](https://metacpan.org/pod/Mojo::UserAgent).  Note t
 user that they have it available to them. You can also use this to attach your own instance of 
 Mojo::UserAgent if need be.
 
+# CONTRIBUTORS 
+
+Shlomi Fish `<shlomif@shlomifish.org >`
+
 # NOTES
 
 ## USE CASE, or "What's the point?"

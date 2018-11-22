@@ -87,6 +87,10 @@ use Mojo::Base 'Mojolicious';
     my $ua = $app->ua;
     my $tx = $ua->get('/thing/23'); # Returns body "Get thing 23"
 
+=head1 CONTRIBUTORS 
+
+Shlomi Fish C<< <shlomif@shlomifish.org > >>
+
 =head1 NOTES
 
 =head2 USE CASE, or "What's the point?"
